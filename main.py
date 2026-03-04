@@ -6,31 +6,21 @@ def main(page: ft.Page):
     page.title = "Mi Formulario de Eventos"
     page.padding = 20
     page.scroll = "adaptive"
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    
+
     def handle_change(e: ft.Event[ft.DatePicker]):
-        page.add(ft.Text(f"Date changed: {e.control.value.strftime('%m/%d/%Y')}"))
+        page.add(ft.Text(f"Fecha Seleccionada: {e.control.value.strftime('%m/%d/%Y')}"))
 
     def handle_dismissal(e: ft.Event[ft.DialogControl]):
-        page.add(ft.Text("DatePicker dismissed"))
+        page.add(ft.Text("Fecha no Seleccionada"))
 
     today = datetime.datetime.now()
 
     d = ft.DatePicker(
-        first_date=datetime.datetime(year=today.year - 1, month=1, day=1),
+        first_date=datetime.datetime(year=today.year - 1, month=Ñ1, day=1),
         last_date=datetime.datetime(year=today.year + 1, month=today.month, day=20),
         on_change=handle_change,
         on_dismiss=handle_dismissal,
     )
-
-    page.add(
-        ft.Button(
-            content="Pick date",
-            icon=ft.Icons.CALENDAR_MONTH,
-            on_click=lambda e: page.show_dialog(d),
-        )
-    )
-
 
     titulo = ft.Text(
         "REGISTRO DE EVENTOS",
@@ -55,14 +45,14 @@ def main(page: ft.Page):
         value="Conferencia",
         width=400,
     )
-    
+
     modalidad = ft.RadioGroup(
-        content=ft.Row([
-            ft.Radio(value="Presencial", label="Presencial"),
-            ft.Radio(value="Virtual", label="Virtual"),
-            
-        
-        ]),
+        content=ft.Row(
+            [
+                ft.Radio(value="Presencial", label="Presencial"),
+                ft.Radio(value="Virtual", label="Virtual"),
+            ],
+        ),
         value="Presencial",
     )
 
@@ -80,7 +70,9 @@ def main(page: ft.Page):
         width=400,
     )
 
-    txt_duracion = ft.Text("Duración seleccionada: 4 horas")
+    txt_duracion = ft.Text(
+        "Duración seleccionada: 4 horas",
+    )
 
     def cambiar_duracion(e):
         txt_duracion.value = f"Duración seleccionada: {int(duracion.value)} horas"
@@ -101,13 +93,13 @@ def main(page: ft.Page):
             resumen.color = ft.Colors.RED
         else:
             resumen.value = f"""
-    RESUMEN DEL EVENTO
+RESUMEN DEL EVENTO
 
-    Nombre: {nombre.value}
-    Tipo: {tipo.value}
-    Modalidad: {modalidad.value}
-    Inscripción: {'Sí' if inscripcion.value else 'No'}
-    Duración: {int(duracion.value)} horas
+Nombre: {nombre.value}
+Tipo: {tipo.value}
+Modalidad: {modalidad.value}
+Inscripción: {'Sí' if inscripcion.value else 'No'}
+Duración: {int(duracion.value)} horas
 """
             resumen.color = ft.Colors.BLACK
 
@@ -125,25 +117,36 @@ def main(page: ft.Page):
         ),
     )
 
-    page.add(
-        titulo,
-        ft.Container(height=10),
-        nombre,
-        ft.Container(height=10),
-        tipo,
-        ft.Container(height=10),
-        ft.Text("Modalidad:"),
-        modalidad,
-        ft.Container(height=10),
-        inscripcion,
-        ft.Container(height=10),
-        ft.Text("Duración:"),
-        duracion,
-        txt_duracion,
-        ft.Container(height=20),
-        boton,
-        linea,
-        resumen,
+    boton_fecha = ft.ElevatedButton(
+        "Pick date",
+        icon=ft.Icons.CALENDAR_MONTH,
+        on_click=lambda e: page.show_dialog(d),
+        width=200,
     )
+
+    contenido = ft.Column(
+        [
+            titulo,
+            ft.Container(height=10),
+            boton_fecha,
+            ft.Container(height=10),
+            nombre,
+            ft.Container(height=10),
+            tipo,
+            ft.Container(height=10),
+            modalidad,
+            ft.Container(height=10),
+            inscripcion,
+            ft.Container(height=10),
+            duracion,
+            txt_duracion,
+            ft.Container(height=20),
+            boton,
+            linea,
+            resumen,
+        ]
+    )
+
+    page.add(contenido)
 
 ft.run(main)
